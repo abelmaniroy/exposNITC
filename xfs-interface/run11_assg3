@@ -1,0 +1,5 @@
+load --int=7 $HOME/myexpos/spl/spl_progs/sample_int7.xsm
+load --os $HOME/myexpos/spl/spl_progs/abi_startup.xsm
+load --init $HOME/myexpos/expl/samples/print50.xsm
+load --library $HOME/myexpos/expl/expl_progs/library.xsm
+load --exhandler $HOME/myexpos/spl/spl_progs/haltprog.xsm

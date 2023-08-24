@@ -1,0 +1,4 @@
+load --int=timer $HOME/myexpos/spl/spl_progs/sample_timer_assg.xsm
+load --os $HOME/myexpos/spl/spl_progs/abi_startup.xsm
+load --init $HOME/myexpos/expl/expl_progs/squares_9.xsm
+load --library $HOME/myexpos/expl/library.lib
