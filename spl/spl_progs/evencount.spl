@@ -1,0 +1,10 @@
+alias i R0;
+alias n R1;
+i=0;
+n=20;
+while(i<=n) do
+	if(i%2==0) then
+		print i;
+	endif;
+	i=i+1;
+endwhile;

@@ -1,0 +1,12 @@
+MOV R0,1
+MOV R1,21
+for:
+MOV R2,21
+SUB R2,R0
+JZ R2,end
+PORT P1,R0
+OUT
+ADD R0,1
+JMP for
+end:
+HALT
