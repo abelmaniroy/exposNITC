@@ -1,0 +1,31 @@
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=9;
+alias usersp R0;
+usersp=SP;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13]=usersp;
+SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512-1;
+
+alias physicalpagenum R1;
+alias offset R2;
+alias filenameaddr R3;
+physicalpagenum=[PTBR+2*((usersp-4)/512)];
+offset=(usersp-4)%512;
+filenameaddr=physicalpagenum*512+offset;
+alias fileName R4;
+fileName=[filenameaddr];
+
+alias counter R5;
+counter=0;
+alias inodeEntry R6;
+inodeEntry=-1;
+while(counter<60) do
+	if(([INODE_TABLE+counter*16+1]==fileName)&&([INODE_TABLE+counter*16]==EXEC)) then
+		inodeEntry=INODE_TABLE+counter*16;
+		break;
+	endif;
+	counter=counter+1;
+endwhile;
+if(inodeEntry==-1) then
+	alias physicalAddrRetVal R7;
+	physicalAddrRetVal=([PTBR+2*((usersp-1)/512)]*512)+((usersp-1)%512);
+	[physicalAddrRetVal]=-1;
+endif;
