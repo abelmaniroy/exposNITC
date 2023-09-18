@@ -1,0 +1,13 @@
+load --idle $HOME/myexpos/expl/samples/idle_12.xsm
+load --init $HOME/myexpos/expl/samples/odd100.xsm
+rm even100.xsm
+load --exec $HOME/myexpos/expl/samples/even100.xsm
+rm primes.xsm
+load --exec $HOME/myexpos/expl/samples/primes.xsm
+load --library $HOME/myexpos/expl/library.lib
+load --os $HOME/myexpos/spl/spl_progs/startup_13.xsm
+load --int=timer $HOME/myexpos/spl/spl_progs/timer_14.xsm
+load --int=10 $HOME/myexpos/spl/spl_progs/int10_14.xsm
+load --int=7 $HOME/myexpos/spl/spl_progs/sample_int7.xsm
+load --module 7 $HOME/myexpos/spl/spl_progs/boot_module_14_assg.xsm
+load --module 5 $HOME/myexpos/spl/spl_progs/scheduler.xsm

@@ -1,0 +1,21 @@
+int main(){
+	decl
+	int t,m,n,r;
+	enddecl
+	begin
+		t=exposcall("Read",-1,m);
+		t=exposcall("Read",-1,n);
+		if(n>m) then
+			t=m;
+			m=n;
+			n=t;
+		endif;
+		while(n>0) do
+			r=m%n;
+			m=n;
+			n=r;
+		endwhile;
+		t=exposcall("Write",-2,m);
+		return 0;
+	end
+}

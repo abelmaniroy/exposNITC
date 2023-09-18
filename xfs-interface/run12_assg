@@ -3,3 +3,4 @@ load --init $HOME/myexpos/expl/samples/print100.xsm
 load --library $HOME/myexpos/expl/library.lib
 load --os $HOME/myexpos/spl/spl_progs/startup12_assg.xsm
 load --int=timer $HOME/myexpos/spl/spl_progs/timer_12.xsm
+load --int=10 $HOME/myexpos/spl/spl_progs/haltprog.xsm

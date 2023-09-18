@@ -1,0 +1,7 @@
+load --idle $HOME/myexpos/expl/samples/idle_12.xsm
+load --init $HOME/myexpos/expl/samples/print50.xsm
+load --library $HOME/myexpos/expl/library.lib
+load --os $HOME/myexpos/spl/spl_progs/startup_13.xsm
+load --int=timer $HOME/myexpos/spl/spl_progs/timer_12.xsm
+load --module 7 $HOME/myexpos/spl/spl_progs/boot_module.xsm
+load --int=10 $HOME/myexpos/spl/spl_progs/haltprog.xsm
