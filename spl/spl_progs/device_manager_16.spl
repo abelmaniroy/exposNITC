@@ -2,7 +2,7 @@ alias functionNum R1;
 alias currentPID R2;
 alias wordAddr R3;
 if(functionNum==3) then
-	breakpoint;
+	
 	multipush(R1,R2,R3);
 	functionNum=8;
 	call RESOURCE_MANAGER;
@@ -15,7 +15,7 @@ if(functionNum==3) then
 	return;
 endif;
 if(functionNum==4) then
-	breakpoint;
+	
 	multipush(R1,R2,R3);
 	functionNum=8;
 	call RESOURCE_MANAGER;
