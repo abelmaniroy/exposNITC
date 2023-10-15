@@ -20,7 +20,7 @@ if(cPID==-1) then
 	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
 	ireturn;
 else
-	if(([PTBR+5]!="0110")&&([PTBR+5]!="1110")) then
+	if(([PTBR+4]==-1)) then
 		multipush(R0,R1,R2);
 		R1=1;
 		call MEMORY_MANAGER;
@@ -104,14 +104,14 @@ else
 		pstack=[pPTBR+16];
 		counter=0;
 		while(counter<512) do
-			[stack1+counter]=[pstack+counter];
+			[stack1*512+counter]=[pstack*512+counter];
 			counter=counter+1;
 		endwhile;
 		counter=0;
 		pstack=[PTBR+18];
 		counter=0;
 		while(counter<512) do
-			[stack2+counter]=[pstack+counter];
+			[stack2*512+counter]=[pstack*512+counter];
 			counter=counter+1;
 		endwhile;
 		[cuserpage*512]=BP;

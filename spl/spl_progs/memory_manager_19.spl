@@ -68,6 +68,7 @@ if(functionNum==5) then
 		if([DISK_MAP_TABLE+10*counter+5]==blockNo) then
 			if([[PROCESS_TABLE+16*counter+14]+11]=="0100") then
 				R0=[[PROCESS_TABLE+16*counter+14]+10];
+				[MEMORY_FREE_LIST+R0]=[MEMORY_FREE_LIST+R0]+1;
 				return;
 			endif;
 		
@@ -75,12 +76,14 @@ if(functionNum==5) then
 		if([DISK_MAP_TABLE+10*counter+6]==blockNo) then
 			if([[PROCESS_TABLE+16*counter+14]+13]=="0100") then
 				R0=[[PROCESS_TABLE+16*counter+14]+12];
+				[MEMORY_FREE_LIST+R0]=[MEMORY_FREE_LIST+R0]+1;
 				return;
 			endif;
 		endif;
 		if([DISK_MAP_TABLE+10*counter+7]==blockNo) then
 			if([[PROCESS_TABLE+16*counter+14]+15]=="0100") then
 				R0=[[PROCESS_TABLE+16*counter+14]+14];
+				[MEMORY_FREE_LIST+R0]=[MEMORY_FREE_LIST+R0]+1;
 				return;
 			endif;
 		endif;

@@ -20,7 +20,7 @@ if(cPID==-1) then
 	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
 	ireturn;
 else
-	if(([PTBR+5]!="0110")&&([PTBR+5]!="1110")) then
+	if(([PTBR+4]==-1)) then
 		multipush(R0,R1,R2);
 		R1=1;
 		call MEMORY_MANAGER;
@@ -60,7 +60,7 @@ else
 		pprocessTableEntry=PROCESS_TABLE+16*pPID;
 		[cprocessTableEntry+3]=[pprocessTableEntry+3];
 		[cprocessTableEntry+4]=CREATED;
-		[cprocessTableEntry+5]=[pprocessTableEntry+5];
+		//[cprocessTableEntry+5]=[pprocessTableEntry+5];
 		[cprocessTableEntry+6]=[pprocessTableEntry+6];
 		[cprocessTableEntry+7]=[pprocessTableEntry+7];
 		[cprocessTableEntry+9]=[pprocessTableEntry+9];

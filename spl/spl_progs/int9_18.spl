@@ -65,7 +65,6 @@ else
 	R1=1;
 	call MEMORY_MANAGER;
 	[PTBR+4]=R0;
-	[PTBR+5]="0110";
 	R1=1;
 	call MEMORY_MANAGER;
 	[PTBR+6]=R0;
