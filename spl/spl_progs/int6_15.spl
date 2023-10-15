@@ -24,7 +24,7 @@ else
 	alias word R5;
 	word=[[PTBR+2*((usersp-3)/512)]*512+((usersp-3)%512)];
 	multipush(R0);
-	breakpoint;
+	
 	R1=4;
 	R2=[SYSTEM_STATUS_TABLE+1];
 	R3=word;
@@ -36,5 +36,4 @@ else
 endif;
 SP=usersp;
 [PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
-breakpoint;
 ireturn;
