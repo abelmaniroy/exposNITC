@@ -32,7 +32,7 @@ if(syscallNo==13) then
 	wPID=[[PTBR+2*((usersp-4)/512)]*512+(usersp-4)%512];
 	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=13;
 	
-	if((wPID==[SYSTEM_STATUS_TABLE+1])||(wPID<0)||(wPID>=16)) then
+	if((wPID==[SYSTEM_STATUS_TABLE+1])||(wPID<0)||(wPID>=16)||([PROCESS_TABLE+16*wPID+4]==TERMINATED)) then
 		alias physicalAddrRetVal R6;
 		physicalAddrRetVal=([PTBR+2*((usersp-1)/512)]*512)+((usersp-1)%512);
 		[physicalAddrRetVal]=-1;
