@@ -16,12 +16,13 @@ if(functionNum==3) then
 endif;
 
 if(functionNum==6) then
+	breakpoint;
 	alias counter R3;
 	counter=0;
 	while(counter<32) do
 		if([SEMAPHORE_TABLE+4*counter+1]==0) then
 			[SEMAPHORE_TABLE+4*counter+1]=1;
-			[SEMAPHORE_TABLE+4*counter+0]=R2;
+			[SEMAPHORE_TABLE+4*counter+0]=-1;
 			R0=counter;
 			return;
 		endif;
@@ -32,12 +33,14 @@ if(functionNum==6) then
 endif;
 
 if(functionNum==7) then
+	breakpoint;
+	breakpoint;
 	alias semEntry R2;
 	alias PID R3;
 	alias counter R4;
-	if([SEMAPHORE_TABLE+4*semEntry+1]==PID) then
-			[SEMAPHORE_TABLE+4*counter+1]=[SEMAPHORE_TABLE+4*counter+1]-1;
-			[SEMAPHORE_TABLE+4*counter+0]=-1;
+	if([SEMAPHORE_TABLE+4*semEntry]==PID) then
+			
+			[SEMAPHORE_TABLE+4*semEntry+0]=-1;
 			counter=0;
 			while(counter<16) do
 				if(([PROCESS_TABLE+16*counter+4]==WAIT_SEMAPHORE)&&([PROCESS_TABLE+16*counter+5]==semEntry)) then
@@ -46,11 +49,9 @@ if(functionNum==7) then
 				
 				counter=counter+1;
 			endwhile;
-			R0=0;
-			return;
 	endif;
-	
-	R0=-1;
+	[SEMAPHORE_TABLE+4*counter+1]=[SEMAPHORE_TABLE+4*semEntry+1]-1;
+	R0=0;
 	return;
 endif;
 

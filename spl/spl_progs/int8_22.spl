@@ -38,19 +38,19 @@ else
 		alias cuserpage R5; 
 		multipush(R0,R1,R2);
 		R1=1;
-		breakpoint;
+		
 		call MEMORY_MANAGER;
 		stack1=R0;
 		multipop(R0,R1,R2);
 		multipush(R0,R1,R2,R3);
 		R1=1;
-		breakpoint;
+		
 		call MEMORY_MANAGER;
 		stack2=R0;
 		multipop(R0,R1,R2,R3);
 		multipush(R0,R1,R2,R3,R4);
 		R1=1;
-		breakpoint;
+		
 		call MEMORY_MANAGER;
 		cuserpage=R0;
 		multipop(R0,R1,R2,R3,R4);
@@ -79,15 +79,17 @@ else
 			[([cprocessTableEntry+11]+1)*512-2*counter+1]=[([pprocessTableEntry+11]+1)*512-2*counter+1];
 			if([([cprocessTableEntry+11]+1)*512-2*counter]==1) then
 				alias semProcessCount R14;
-				semProcessCount=[SEMAPHORE_TABLE+4*[([cprocessTableEntry+11]+1)*512-2*counter+1]];
-				semProcessCount=semProcessCount+1;
+				semProcessCount=[SEMAPHORE_TABLE+4*[([cprocessTableEntry+11]+1)*512-2*counter+1]+1];
+				[SEMAPHORE_TABLE+4*[([cprocessTableEntry+11]+1)*512-2*counter+1]+1]=semProcessCount+1;
 			endif;
 			counter=counter+1;
 		endwhile;
 		
 		counter=0;
+		
 		while(counter<10) do
-			[DISK_MAP_TABLE+10*pPID+counter]=[DISK_MAP_TABLE+10*cPID+counter];
+			
+			[DISK_MAP_TABLE+10*cPID+counter]=[DISK_MAP_TABLE+10*pPID+counter];
 			counter=counter+1;
 		endwhile;
 		alias pPTBR R12;

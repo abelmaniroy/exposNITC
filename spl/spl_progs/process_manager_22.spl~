@@ -32,7 +32,7 @@ if(functionNum==2) then
 	alias counter R8;
 	counter=1;
 	while(counter<=8) do
-		if([([processTableEntry+11]+1)*512-2*counter]!=1) then	
+		if([([processTableEntry+11]+1)*512-2*counter]!=-1) then	
 			if([([processTableEntry+11]+1)*512-2*counter]==1) then
 				multipush(R1,R2,R3,R4,R8);
 				R1=7;

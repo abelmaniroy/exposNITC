@@ -77,7 +77,7 @@ else
 	
 	[PTBR+5]="0000";
 	[PTBR+7]="0000";
-	breakpoint;
+	
 	R1=1;
 	call MEMORY_MANAGER;
 	[PTBR+16]=R0;
@@ -95,6 +95,7 @@ else
 	
 	R1=5;
 	R2=[INODE_TABLE+(16*[processTableEntry+7])+8];
+	breakpoint;
 	call MEMORY_MANAGER;
 	[PTBR+8]=R0;
 	[PTBR+8+1]="0100";
