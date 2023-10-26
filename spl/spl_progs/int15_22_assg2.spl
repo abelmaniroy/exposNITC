@@ -1,0 +1,7 @@
+print("maximum memory usage:");
+print([75*512]);
+print("disk accesses:");
+print([75*512+1]);
+print("contextswitch");
+print([75*512+2]);
+halt;

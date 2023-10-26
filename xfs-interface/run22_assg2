@@ -14,13 +14,13 @@ load --int=10 $HOME/myexpos/spl/spl_progs/int10_20.xsm
 load --int=11 $HOME/myexpos/spl/spl_progs/int11.xsm
 load --int=13 $HOME/myexpos/spl/spl_progs/int13.xsm
 load --int=14 $HOME/myexpos/spl/spl_progs/int14.xsm
-load --int=15 $HOME/myexpos/spl/spl_progs/int15.xsm
+load --int=15 $HOME/myexpos/spl/spl_progs/int15_22_assg2.xsm
 load --module 0 $HOME/myexpos/spl/spl_progs/resource_manager_22.xsm
 load --module 1 $HOME/myexpos/spl/spl_progs/process_manager_22.xsm
-load --module 2 $HOME/myexpos/spl/spl_progs/memory_manager_19.xsm
-load --module 4 $HOME/myexpos/spl/spl_progs/device_manager_18.xsm
-load --module 5 $HOME/myexpos/spl/spl_progs/scheduler_20.xsm
-load --module 7 $HOME/myexpos/spl/spl_progs/boot_module_22.xsm
+load --module 2 $HOME/myexpos/spl/spl_progs/memory_manager_22_assg2.xsm
+load --module 4 $HOME/myexpos/spl/spl_progs/device_manager_22_assg2.xsm
+load --module 5 $HOME/myexpos/spl/spl_progs/scheduler_22_assg2.xsm
+load --module 7 $HOME/myexpos/spl/spl_progs/boot_module_22_assg2.xsm
 rm child.xsm
 rm parent.xsm
 load --exec $HOME/myexpos/expl/samples/child.xsm

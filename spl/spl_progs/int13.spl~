@@ -22,7 +22,7 @@ if(syscallNo==17) then
 			R1=6;
 			R2=[SYSTEM_STATUS_TABLE+1];
 			call RESOURCE_MANAGER;
-			
+			breakpoint;
 			semEntry=R0;
 			multipop(R1,R2,R6);
 			if(semEntry==-1) then
