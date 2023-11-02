@@ -5,23 +5,10 @@ int main(){
 	enddecl
 	begin
 		pid = exposcall("Fork");
-		if(pid!=0) then
-			t=exposcall("Wait",pid);
-		endif;
 		pid = exposcall("Fork");
-		if(pid!=0) then
-			t=exposcall("Wait",pid);
-		endif;
-		pid = exposcall("Fork");
-		if(pid!=0) then
-			t=exposcall("Wait",pid);
-		endif;
-					
+		pid = exposcall("Fork");			
 		t=exposcall("Exec","pid.xsm");
-		
-		
-		
-		
+		1
 		return 0;
 	end
 }

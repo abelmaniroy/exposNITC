@@ -1,0 +1,163 @@
+breakpoint;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=5;
+alias usersp R0;
+usersp=SP;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13]=usersp;
+SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512-1;
+
+alias physicalpagenum R1;
+alias pgoffset R2;
+alias filedescphysicaladdr R3;
+physicalpagenum=[PTBR+2*((usersp-4)/512)];
+pgoffset=(usersp-4)%512;
+filedescphysicaladdr=physicalpagenum*512+pgoffset;
+alias fileDesc R4;
+fileDesc=[filedescphysicaladdr];
+alias physicalAddrRetVal R5;
+alias processTableEntry R14;
+processTableEntry=PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16;
+breakpoint;
+if(fileDesc==-2) then
+	alias word R5;
+	word=[[PTBR+2*((usersp-3)/512)]*512+((usersp-3)%512)];
+	multipush(R0);
+	R1=3;
+	R2=[SYSTEM_STATUS_TABLE+1];
+	R3=word;
+	call DEVICE_MANAGER;
+	multipop(R0);
+	alias physicalAddrRetVal R6;
+	physicalAddrRetVal=([PTBR+2*((usersp-1)/512)]*512)+((usersp-1)%512);
+	[physicalAddrRetVal]=0;
+	SP=usersp;
+	[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9]=0;
+	ireturn;
+	
+else
+
+	physicalAddrRetVal=([PTBR+2*((usersp-1)/512)]*512)+((usersp-1)%512);
+	if((fileDesc>8)||(fileDesc<0)) then
+		
+		[physicalAddrRetVal]=-1;
+		SP=usersp;
+		[processTableEntry+9]=0;
+		ireturn;
+	
+	endif;		
+	alias resourceEntry R6;
+	resourceEntry=([processTableEntry+11]+1)*512-16+2*fileDesc;
+	if([resourceEntry]!=FILE) then
+		[physicalAddrRetVal]=-1;
+		SP=usersp;
+		[processTableEntry+9]=0;
+		ireturn;
+	endif;
+	
+	alias inodeIndex R7;
+	inodeIndex=[OPEN_FILE_TABLE+4*[resourceEntry+1]];
+	alias inodeEntry R13;
+	inodeEntry=INODE_TABLE+16*inodeIndex;
+	
+	if(([processTableEntry+3]!=1)&&([inodeEntry+4]==EXCLUSIVE)&&([inodeEntry+3]!=[processTableEntry+3])) then
+		[physicalAddrRetVal]=-3;
+		SP=usersp;
+		[processTableEntry+9]=0;
+		ireturn;
+	
+	endif;
+	
+	alias retValue R8;
+	multipush(R0,R1,R2,R3,R4,R5,R6,R7,R13,R14);
+	R1=4;
+	R2=inodeIndex;
+	R3=[SYSTEM_STATUS_TABLE+1];
+	call RESOURCE_MANAGER;
+	retValue=R0;
+	multipop(R0,R1,R2,R3,R4,R5,R6,R7,R13,R14);
+	
+	if(retValue==-1) then
+		[physicalAddrRetVal]=-1;
+		SP=usersp;
+		[processTableEntry+9]=0;
+		ireturn;
+	endif;
+	
+	alias Lseek R8;
+	Lseek=[OPEN_FILE_TABLE+4*[resourceEntry+1]+2];
+	
+	alias word R9;
+	word=[[PTBR+2*((usersp-3)/512)]*512+((usersp-3)%512)];
+	
+	
+	if(Lseek==MAX_FILE_SIZE) then
+		multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R13,R14);
+		R1=5;
+		R2=inodeIndex;
+		R3=[SYSTEM_STATUS_TABLE+1];
+		call RESOURCE_MANAGER;
+		multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R13,R14);
+		[physicalAddrRetVal]=-2;
+		SP=usersp;
+		[processTableEntry+9]=0;
+		ireturn;
+	
+	endif;
+	
+	if((Lseek%512==0)&&(Lseek==[INODE_TABLE+inodeIndex*16+2])) then
+		alias newBlock R10;
+		multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R13,R14);
+		R1=3;
+		call MEMORY_MANAGER;
+		newBlock=R0;
+		multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R13,R14);
+		if(newBlock==-1) then
+			multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R13,R14);
+			R1=5;
+			R2=inodeIndex;
+			R3=[SYSTEM_STATUS_TABLE+1];
+			call RESOURCE_MANAGER;
+			multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R13,R14);
+			[physicalAddrRetVal]=-2;
+			SP=usersp;
+			[processTableEntry+9]=0;
+			ireturn;
+		
+		endif;
+		[inodeEntry+8+(Lseek/512)]=newBlock;
+		
+	endif;
+	
+	alias blockNo R11;
+	blockNo=[inodeEntry+8+(Lseek/512)];
+	alias offset R12;
+	offset=Lseek%512;
+	
+	multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R13,R14);
+	R1=1;
+	R2=blockNo;
+	R3=offset;
+	R4=word;
+	call FILE_MANAGER;
+	multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R13,R14);
+	
+	if(Lseek==[inodeEntry+2]) then
+		[inodeEntry+2]=[inodeEntry+2]+1;
+		[ROOT_FILE+8*inodeIndex+1]=[ROOT_FILE+8*inodeIndex+1]+1;	
+	endif;
+	
+	[OPEN_FILE_TABLE+4*[resourceEntry+1]+2]=Lseek+1;
+	
+	multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R13,R14);
+	R1=5;
+	R2=inodeIndex;
+	R3=[SYSTEM_STATUS_TABLE+1];
+	call RESOURCE_MANAGER;
+	multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10,R11,R13,R14);
+	[physicalAddrRetVal]=0;
+	SP=usersp;
+	[processTableEntry+9]=0;
+	breakpoint;
+	ireturn;
+endif;
+
+	

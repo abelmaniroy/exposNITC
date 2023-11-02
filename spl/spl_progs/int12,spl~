@@ -1,0 +1,47 @@
+breakpoint;
+alias syscallNo R1;
+alias usersp R0;
+usersp=SP;
+syscallNo=[[PTBR+2*((usersp-5)/512)]*512+(SP-5)%512];
+alias processTableEntry R8;
+processTableEntry=PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16;
+[processTableEntry+13]=usersp;
+SP=[processTableEntry+11]*512-1;
+alias physicalAddrRetVal R6;
+physicalAddrRetVal=([PTBR+2*((usersp-1)/512)]*512)+((usersp-1)%512);
+if(syscallNo==28) then
+
+	if([SYSTEM_STATUS_TABLE+1]!=1) then
+		[physicalAddrRetVal]=-1;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+	endif;
+	
+	multipush(R0,R1,R6,R8);
+	R1=5;
+	R2=[SYSTEM_STATUS_TABLE+1];
+	call PROCESS_MANAGER;
+	multipop(R0,R1,R6,R8);
+	
+	[processTableEntry+4]=TERMINATED;
+	[[PTBR+2*(4096/512)]*512+(4096%512)]=[67*512+1];
+	[processTableEntry+13]=0;
+	
+	[PROCESS_TABLE+16+4]=READY;
+
+
+
+
+	
+
+
+
+
+
+
+	[physicalAddrRetVal]=0;
+	SP=[processTableEntry+13];
+	[processTableEntry+9]=0;
+	ireturn;
+endif;

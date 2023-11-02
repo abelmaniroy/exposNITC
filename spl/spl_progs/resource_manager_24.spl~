@@ -81,11 +81,11 @@ endif;
 if(functionNum==5) then
 	alias inodeIndex R2;
 	alias PID R3;
-	if([FILE_STATUS_TABLE]!=PID) then
+	if([FILE_STATUS_TABLE+4*inodeIndex+0]!=PID) then
 		R0=-1;
 		return;
 	endif;
-	[FILE_STATUS_TABLE]=-1;
+	[FILE_STATUS_TABLE+4*inodeIndex+0]=-1;
 	alias counter R4;
 	counter=0;
 	while(counter<16) do

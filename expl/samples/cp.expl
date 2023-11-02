@@ -1,0 +1,40 @@
+int main(){
+	decl
+	int t,desc1,desc2,descr,a;
+	str word,file1,file2;
+	int size1,size2;
+	enddecl
+	begin
+		t=exposcall("Read",-1,file1);
+		t=exposcall("Read",-1,file2);
+		desc1=exposcall("Open",file1);
+		desc2=exposcall("Open",file2);
+		descr=exposcall("Open","root");
+		a=0;
+		t=exposcall("Seek",desc1,0);
+		t=exposcall("Seek",desc2,0);
+		t=exposcall("Seek",descr,0);
+		
+		while(a<60) do
+			t=exposcall("Read",descr,word);
+			t=exposcall("Seek",descr,-1);
+			if(word==file1) then
+				t=exposcall("Seek",descr,1);
+				t=exposcall("Read",descr,size1);
+				t=exposcall("Seek",descr,-2);
+				break;
+			endif;
+			t=exposcall("Seek",descr,8);
+			a=a+1;
+		endwhile;
+		
+		a=0;
+		while(a<size1) do
+			t=exposcall("Read",desc1,word);
+			t=exposcall("Write",desc2,word);
+			a=a+1;
+		endwhile;
+		
+		return 0;
+	end
+}

@@ -104,7 +104,7 @@ loadi(7,20);
 
 counter=1;
 while(counter<=8) do
-	[([PROCESS_TABLE+11]+1)*512-2*counter]=-1;
+	[([PROCESS_TABLE+16+11]+1)*512-2*counter]=-1;
 	counter=counter+1;
 endwhile;
 

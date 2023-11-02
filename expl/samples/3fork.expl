@@ -8,10 +8,6 @@ int main(){
 		pid = exposcall("Fork");
 		pid = exposcall("Fork");			
 		t=exposcall("Exec","pid.xsm");
-		
-		
-		
-		
 		return 0;
 	end
 }

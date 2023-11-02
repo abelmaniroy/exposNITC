@@ -1,0 +1,179 @@
+breakpoint;
+alias syscallNo R1;
+alias usersp R0;
+usersp=SP;
+syscallNo=[[PTBR+2*((usersp-5)/512)]*512+(SP-5)%512];
+alias processTableEntry R8;
+processTableEntry=PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16;
+[processTableEntry+13]=usersp;
+SP=[processTableEntry+11]*512-1;
+alias physicalAddrRetVal R6;
+physicalAddrRetVal=([PTBR+2*((usersp-1)/512)]*512)+((usersp-1)%512);
+if(syscallNo==2) then
+	breakpoint;
+	[processTableEntry+9]=2;
+	alias fileName R2;
+	fileName=[[PTBR+2*((usersp-4)/512)]*512+(usersp-4)%512];
+	alias counter R3;
+	counter=0;
+
+	alias fileDesc R4;
+	while(counter<8) do
+		if([([processTableEntry+11]+1)*512-16+2*counter]==-1) then
+			fileDesc=counter;
+			break;
+		endif;
+		counter=counter+1;
+	endwhile;
+	
+	if(counter==8) then
+		[physicalAddrRetVal]=-3;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+	endif;	
+	alias openTableIndex R7;
+	multipush(R0,R1,R2,R3,R4,R6,R8);
+	R1=3;
+	R2=fileName;
+	call FILE_MANAGER;
+	openTableIndex=R0;
+	multipop(R0,R1,R2,R3,R4,R6,R8);	
+	if(openTableIndex<0) then
+		[physicalAddrRetVal]=openTableIndex;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+	endif;	
+	alias resourceEntry R9;
+	resourceEntry=([processTableEntry+11]+1)*512-16+2*fileDesc;
+	[resourceEntry]=FILE;
+	[resourceEntry+1]=openTableIndex;
+	[physicalAddrRetVal]=fileDesc;
+	SP=[processTableEntry+13];
+	[processTableEntry+9]=0;
+	breakpoint;
+	ireturn;
+endif;
+if(syscallNo==3) then
+	//breakpoint;
+	[processTableEntry+9]=3;
+	alias fileDesc R2;
+	fileDesc=[[PTBR+2*((usersp-4)/512)]*512+(usersp-4)%512];
+	if((fileDesc>=8)||(fileDesc<0)) then
+		[physicalAddrRetVal]=-1;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+		
+	endif;
+	
+	alias resourceEntry R3;
+	resourceEntry=([processTableEntry+11]+1)*512-16+2*fileDesc;
+	if(([resourceEntry]==SEMAPHORE)||([resourceEntry]==-1)) then
+		[physicalAddrRetVal]=-1;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+		
+	endif;
+	
+	multipush(R0,R1,R2,R3,R4,R6,R8);
+	R1=4;
+	R2=[resourceEntry+1];
+	call FILE_MANAGER;
+	multipush(R0,R1,R2,R3,R4,R6,R8);
+	[resourceEntry]=-1;
+	[physicalAddrRetVal]=0;
+	SP=[processTableEntry+13];
+	[processTableEntry+9]=0;
+	breakpoint;
+	ireturn;
+endif;
+if(syscallNo==6) then
+	
+	[processTableEntry+9]=6;
+	alias fileDesc R2;
+	fileDesc=[[PTBR+2*((usersp-4)/512)]*512+(usersp-4)%512];
+	breakpoint;
+	if((fileDesc>=8)||(fileDesc<0)) then
+		[physicalAddrRetVal]=-1;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+		
+	endif;
+	alias resourceEntry R3;
+	resourceEntry=([processTableEntry+11]+1)*512-16+2*fileDesc;
+	if(([resourceEntry]==SEMAPHORE)||([resourceEntry]==-1)) then
+		[physicalAddrRetVal]=-1;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;		
+	endif;
+	alias openFileTableIndex R4;
+	openFileTableIndex=[resourceEntry+1];
+	alias openFileTableEntry R9;
+	openFileTableEntry=OPEN_FILE_TABLE+4*openFileTableIndex;
+	alias inodeIndex R5;
+	inodeIndex=[openFileTableEntry];
+	breakpoint;
+	multipush(R0,R1,R2,R3,R4,R5,R6,R8,R9);
+	R1=4;
+	R2=inodeIndex;
+	R3=[SYSTEM_STATUS_TABLE+1];
+	call RESOURCE_MANAGER;
+	if(R0==-1) then
+		[physicalAddrRetVal]=-1;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+	endif;
+	multipop(R0,R1,R2,R3,R4,R5,R6,R8,R9);
+	alias Lseek R10;
+	Lseek=[openFileTableEntry+2];
+	alias size R7;
+	size=[INODE_TABLE+16*inodeIndex+2];
+	if(inodeIndex==INODE_ROOT) then
+		size=480;
+	endif;
+	alias offset R11;
+	offset=[[PTBR+2*((usersp-3)/512)]*512+(usersp-3)%512];
+	if(Lseek+offset<0) then
+		multipush(R6);
+		R1=5;
+		R2=inodeIndex;
+		R3=[SYSTEM_STATUS_TABLE+1];
+		call RESOURCE_MANAGER;
+		multipop(R6);
+		[physicalAddrRetVal]=-2;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+		
+	endif;
+	if(offset==0) then
+		[openFileTableEntry+2]=0;
+	
+	else
+		if(Lseek+offset>size) then
+			[openFileTableEntry+2]=size;
+		else
+			[openFileTableEntry+2]=Lseek+offset;
+		endif;
+		
+	endif;
+	breakpoint;
+	multipush(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10);
+	R1=5;
+	R2=inodeIndex;
+	R3=[SYSTEM_STATUS_TABLE+1];
+	call RESOURCE_MANAGER;
+	multipop(R0,R1,R2,R3,R4,R5,R6,R7,R8,R9,R10);
+	[physicalAddrRetVal]=0;
+	SP=[processTableEntry+13];
+	[processTableEntry+9]=0;
+	ireturn;
+	
+	
+endif;

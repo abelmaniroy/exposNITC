@@ -44,17 +44,29 @@ begin
     pid = exposcall("Fork");
     if(pid == 0) then
         p = head;
-        x = p.data;
-        temp = exposcall("Write",-2,"child");
-        temp = exposcall("Write",-2,x);
-        
+        while(p != null)  do
+            x = p.data;
+            jk
+            temp = exposcall("Write",-2,x);
+            p = p.next;
+            if(p == null) then
+                break;
+            endif;
+            p = p.next;
+        endwhile;
     else
         q = head.next;
-        x = q.data;
-        temp = exposcall("Write",-2,"parent");
-        temp = exposcall("Write",-2,x);
-        
+        while(q != null)  do
+            x = q.data;
+            temp = exposcall("Write",-2,x);
+            q = q.next;
+            if(q == null) then
+                break;
+            endif;
+            q = q.next;
+        endwhile;
     endif;
+                
                 
     return 0;
 end

@@ -62,10 +62,9 @@ endif;
 
 if(syscallNo==3) then
 	//breakpoint;
-	[processTableEntry+9]=2;
+	[processTableEntry+9]=3;
 	alias fileDesc R2;
-	alias fileName R4;
-	fileName=[[PTBR+2*((usersp-4)/512)]*512+(usersp-4)%512];
+	fileDesc=[[PTBR+2*((usersp-4)/512)]*512+(usersp-4)%512];
 	if((fileDesc>=8)||(fileDesc<0)) then
 		[physicalAddrRetVal]=-1;
 		SP=[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];

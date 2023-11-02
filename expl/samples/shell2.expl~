@@ -17,7 +17,7 @@ int main(){
 					t=exposcall("Exec",command);
 					if(t!=0) then
 						t= exposcall("Write",-2,"BAD COMMAND");
-						break;
+						
 					endif;
 					
 				endif;

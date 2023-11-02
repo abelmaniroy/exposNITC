@@ -1,0 +1,32 @@
+int main(){
+	decl
+	int t,desc,a,permiss;
+	str file;
+	int word;
+	enddecl
+	begin
+		t=exposcall("Write",-2,"--FILE NAME--");
+		t=exposcall("Read",-1,file);
+		t= exposcall("Write",-2,"PERMISSION:");
+		t=exposcall("Read",-1,permiss);
+		t=exposcall("Create",file,permiss);
+		desc=exposcall("Open",file);
+		a=1;
+		while(a<=1100) do
+			t=exposcall("Write",desc,a);
+			a=a+1;
+		endwhile;
+		a=1;
+		t=exposcall("Seek",desc,0);
+		t=exposcall("Seek",desc,1099);
+		
+		while(a<=1100) do
+			
+			t=exposcall("Read",desc,word);
+			t=exposcall("Write",-2,word);
+			t=exposcall("Seek",desc,-2);
+			a=a+1;
+		endwhile;
+		return 0;
+	end
+}

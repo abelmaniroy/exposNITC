@@ -1,0 +1,241 @@
+breakpoint;
+alias syscallNo R1;
+alias usersp R0;
+usersp=SP;
+syscallNo=[[PTBR+2*((usersp-5)/512)]*512+(SP-5)%512];
+alias processTableEntry R8;
+processTableEntry=PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16;
+[processTableEntry+13]=usersp;
+SP=[processTableEntry+11]*512-1;
+alias physicalAddrRetVal R6;
+physicalAddrRetVal=([PTBR+2*((usersp-1)/512)]*512)+((usersp-1)%512);
+
+R2=[[PTBR+2*((usersp-4)/512)]*512+(usersp-4)%512];
+
+R3=[[PTBR+2*((usersp-3)/512)]*512+(usersp-3)%512];
+
+if(syscallNo==22) then
+	breakpoint;
+	[processTableEntry+9]=22;
+	alias userName R2;
+	alias passWord R3;
+	
+	if(([SYSTEM_STATUS_TABLE+0]!=1)||([SYSTEM_STATUS_TABLE+1]!=2)) then
+		[physicalAddrRetVal]=-1;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+	endif;
+	
+	alias counter R4;
+	counter=0;
+	alias userId R5;
+	userId=-1;
+	while(counter<16) do
+		if([USER_TABLE+2*counter]==userName) then
+			[physicalAddrRetVal]=-1;
+			SP=[processTableEntry+13];
+			[processTableEntry+9]=0;
+			ireturn;
+		endif;
+		if(([USER_TABLE+2*counter]==-1)&&(userId==-1)) then
+			userId=counter;
+		
+		endif;
+		
+		counter=counter+1;
+	endwhile;
+	
+	if(userId==-1) then
+		[physicalAddrRetVal]=-3;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+	
+	endif;
+	
+	encrypt passWord;
+	[USER_TABLE+2*userId]=userName;
+	[USER_TABLE+2*userId+1]=passWord;
+	[physicalAddrRetVal]=0;
+	SP=[processTableEntry+13];
+	[processTableEntry+9]=0;
+	ireturn;
+	
+	
+endif;
+
+
+if(syscallNo==23) then
+	breakpoint;
+	[processTableEntry+9]=23;
+	alias userName R2;
+	
+	if(([SYSTEM_STATUS_TABLE+0]!=1)||([SYSTEM_STATUS_TABLE+1]!=2)) then
+		[physicalAddrRetVal]=-2;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+	endif;
+	
+	if((userName=="root")||(userName=="kernel")) then
+		[physicalAddrRetVal]=-2;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+	endif;
+	
+	alias counter R4;
+	counter=0;
+	alias userId R5;
+	while(counter<16) do
+		if([USER_TABLE+2*counter]==userName) then
+			userId=counter;
+			break;
+		endif;
+		counter=counter+1;
+	endwhile;
+	
+	if(counter==16) then
+		[physicalAddrRetVal]=-1;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+	
+	endif;
+	
+	
+	counter=0;
+	while(counter<60) do
+		if([ROOT_FILE+8*counter+3]==userName) then
+			[physicalAddrRetVal]=-3;
+			SP=[processTableEntry+13];
+			[processTableEntry+9]=0;
+			ireturn;
+			
+		
+		endif;
+		
+		counter=counter+1;
+	endwhile;
+	
+	[USER_TABLE+2*userId]=-1;
+	[USER_TABLE+2*userId+1]=-1;
+	[physicalAddrRetVal]=0;
+	SP=[processTableEntry+13];
+	[processTableEntry+9]=0;
+	ireturn;
+	
+endif;
+
+
+if(syscallNo==24) then
+	breakpoint;
+	[processTableEntry+9]=24;
+	alias userName R2;
+	alias passWord R3;
+	
+	if([SYSTEM_STATUS_TABLE+1]!=2) then
+		[physicalAddrRetVal]=-1;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+	endif;
+	
+	alias counter R4;
+	counter=0;
+	alias userId R5;
+	while(counter<16) do
+		if([USER_TABLE+2*counter]==userName) then
+			userId=counter;
+			break;
+		endif;
+		counter=counter+1;
+	endwhile;
+	
+	if(counter==16) then
+		[physicalAddrRetVal]=-2;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+	
+	endif;
+	
+	if([SYSTEM_STATUS_TABLE+0]!=userId) then
+		if([SYSTEM_STATUS_TABLE+0]!=1) then
+			[physicalAddrRetVal]=-1;
+			SP=[processTableEntry+13];
+			[processTableEntry+9]=0;
+			ireturn;
+		endif;
+	
+	endif;
+	
+	encrypt passWord;
+	
+	
+	[USER_TABLE+2*userId+1]=passWord;
+	[physicalAddrRetVal]=0;
+	SP=[processTableEntry+13];
+	[processTableEntry+9]=0;
+	ireturn;
+	
+	
+endif;
+
+
+if(syscallNo==25) then
+	breakpoint;
+	[processTableEntry+9]=25;
+	alias userId R2;
+	
+	if((userId<0)||(userId>15)) then
+		[physicalAddrRetVal]=-1;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+	
+	endif;
+	
+	if([USER_TABLE+2*userId]==-1) then
+		[physicalAddrRetVal]=-1;
+		SP=[processTableEntry+13];
+		[processTableEntry+9]=0;
+		ireturn;
+	
+	endif;
+	
+	alias userName R3;
+	userName=[USER_TABLE+2*userId];
+	
+	[physicalAddrRetVal]=userName;
+	SP=[processTableEntry+13];
+	[processTableEntry+9]=0;
+	ireturn;
+	
+endif;
+
+if(syscallNo==26) then
+	breakpoint;
+	[processTableEntry+9]=26;
+	alias userName R2;
+	
+	alias counter R3;
+	counter=0;
+	while(counter<16) do
+		if([USER_TABLE+2*counter]==userName) then
+			[physicalAddrRetVal]=counter;
+			SP=[processTableEntry+13];
+			[processTableEntry+9]=0;
+			ireturn;
+		endif;
+		
+		counter=counter+1;
+	endwhile;
+	
+	[physicalAddrRetVal]=-1;
+	SP=[processTableEntry+13];
+	[processTableEntry+9]=0;
+	ireturn;
+	
+endif;

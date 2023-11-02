@@ -1,0 +1,33 @@
+int main(){
+	decl
+	int t,desc,a,file;
+	str uname,word;
+	enddecl
+	begin
+		
+		t=exposcall("Read",-1,uname);
+		desc=exposcall("Open","root");
+		a=0;
+		t=exposcall("Seek",desc,0);
+		while(a<60) do
+			t=exposcall("Read",desc,file);
+			t=exposcall("Seek",desc,-1);
+			if(file!=-1) then
+				t=exposcall("Seek",desc,3);
+				t=exposcall("Read",desc,word);
+				t=exposcall("Seek",desc,-4);
+				if(word==uname) then
+					t=exposcall("Delete",file);
+				endif;
+				
+			endif;
+						
+			t=exposcall("Seek",desc,8);
+			
+			a=a+1;
+		endwhile;
+		
+		
+		return 0;
+	end
+}
