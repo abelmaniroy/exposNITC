@@ -173,13 +173,13 @@ if(functionNum==5) then
 	counter=0;
 	while(counter<60) do
 		if([INODE_TABLE+16*counter+1]!=-1) then
-			multipush(R1,R2,R3);
+			multipush(R1,R2,R3,R4);
 			R1=5;
 			R3=PID;
 			R2=counter;
 			
 			call RESOURCE_MANAGER;
-			multipop(R1,R2,R3);
+			multipop(R1,R2,R3,R4);
 		endif;
 		counter=counter+1;
 	endwhile;

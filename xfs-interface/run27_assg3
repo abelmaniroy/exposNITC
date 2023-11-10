@@ -1,0 +1,67 @@
+load --idle $HOME/myexpos/expl/samples/idle_12.xsm
+load --init $HOME/myexpos/expl/samples/login.xsm
+load --shell $HOME/myexpos/expl/samples/ex_shell.xsm
+load --library $HOME/myexpos/expl/library.lib
+load --os $HOME/myexpos/spl/spl_progs/startup_27.xsm
+load --exhandler $HOME/myexpos/spl/spl_progs/exception_handler_19.xsm
+load --int=timer $HOME/myexpos/spl/spl_progs/timer_27.xsm
+load --int=disk $HOME/myexpos/spl/spl_progs/disk_handler.xsm
+load --int=console $HOME/myexpos/spl/spl_progs/console_handler.xsm
+load --int=4 $HOME/myexpos/spl/spl_progs/int4_26.xsm
+load --int=5 $HOME/myexpos/spl/spl_progs/int5_25.xsm
+load --int=6 $HOME/myexpos/spl/spl_progs/int6_24.xsm
+load --int=7 $HOME/myexpos/spl/spl_progs/int7_25.xsm
+load --int=8 $HOME/myexpos/spl/spl_progs/int8_24.xsm
+load --int=9 $HOME/myexpos/spl/spl_progs/int9_19.xsm
+load --int=10 $HOME/myexpos/spl/spl_progs/int10_20.xsm
+load --int=11 $HOME/myexpos/spl/spl_progs/int11.xsm
+load --int=12 $HOME/myexpos/spl/spl_progs/int12.xsm
+load --int=13 $HOME/myexpos/spl/spl_progs/int13.xsm
+load --int=14 $HOME/myexpos/spl/spl_progs/int14.xsm
+load --int=15 $HOME/myexpos/spl/spl_progs/int15_26.xsm
+load --int=16 $HOME/myexpos/spl/spl_progs/int16.xsm
+load --int=17 $HOME/myexpos/spl/spl_progs/int17.xsm
+load --module 0 $HOME/myexpos/spl/spl_progs/resource_manager_24.xsm
+load --module 1 $HOME/myexpos/spl/spl_progs/process_manager_25.xsm
+load --module 2 $HOME/myexpos/spl/spl_progs/memory_manager_27.xsm
+load --module 3 $HOME/myexpos/spl/spl_progs/file_manager_25.xsm
+load --module 4 $HOME/myexpos/spl/spl_progs/device_manager_23.xsm
+load --module 5 $HOME/myexpos/spl/spl_progs/scheduler_27.xsm
+load --module 6 $HOME/myexpos/spl/spl_progs/pager_module.xsm
+load --module 7 $HOME/myexpos/spl/spl_progs/boot_module_27.xsm
+rm createf.xsm
+load --exec $HOME/myexpos/expl/samples/createf.xsm
+rm deletef.xsm
+load --exec $HOME/myexpos/expl/samples/deletef.xsm
+rm readf.xsm
+load --exec $HOME/myexpos/expl/samples/readf.xsm
+rm wr1100.xsm
+load --exec $HOME/myexpos/expl/samples/wr1100.xsm
+rm app1100.xsm
+load --exec $HOME/myexpos/expl/samples/app1100.xsm
+rm 25_3.xsm
+load --exec $HOME/myexpos/expl/samples/25_3.xsm
+rm 25_4.xsm
+load --exec $HOME/myexpos/expl/samples/25_4.xsm
+rm cat.xsm
+load --exec $HOME/myexpos/expl/samples/cat.xsm
+rm rm.xsm
+load --exec $HOME/myexpos/expl/samples/rm.xsm
+rm ls.xsm
+load --exec $HOME/myexpos/expl/samples/ls.xsm
+rm cp.xsm
+load --exec $HOME/myexpos/expl/samples/cp.xsm
+rm lu.xsm
+load --exec $HOME/myexpos/expl/samples/lu.xsm
+rm ru.xsm
+load --exec $HOME/myexpos/expl/samples/ru.xsm
+rm 4_fork.xsm
+load --exec $HOME/myexpos/expl/samples/4_fork.xsm
+rm pid.xsm
+load --exec $HOME/myexpos/expl/samples/pid.xsm
+rm delay.xsm
+load --exec $HOME/myexpos/expl/samples/delay.xsm
+rm 27_3.xsm
+load --exec $HOME/myexpos/expl/samples/27_3.xsm
+rm pgm1.xsm
+load --exec $HOME/myexpos/expl/samples/pgm1.xsm

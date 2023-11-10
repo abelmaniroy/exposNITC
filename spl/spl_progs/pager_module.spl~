@@ -1,0 +1,224 @@
+breakpoint;
+alias functionNum R1;
+alias currentPID R2;
+
+if(functionNum==1) then
+	
+	alias semW R4;
+	alias maxTick R5;
+	alias tickP R6;
+	maxTick=0;
+	
+	semW=-1;
+	maxTick=-1;
+	alias counter R7;
+	counter=3;
+	alias newPID R3;
+	newPID=-1;
+	while(counter<15) do
+		alias processEntry R8;
+		processEntry=PROCESS_TABLE+16*counter;
+		if([processEntry+6]!=1) then
+			if([processEntry+4]==WAIT_PROCESS) then
+				newPID=counter;
+				break;
+			endif;
+			if(([processEntry+4]==WAIT_SEMAPHORE)&&(semW==-1)) then
+				semW=counter;
+				
+			endif;
+			if(([processEntry+4]!=TERMINATED)&&([processEntry+4]!=ALLOCATED)&&([processEntry+4]!=ALLOCATED)) then
+				if([processEntry+0]>maxTick) then
+					maxTick=[processEntry+0];
+					tickP=counter;
+				endif;
+				
+			endif;
+			
+			
+		endif;
+	
+		counter=counter+1;
+	endwhile;
+	breakpoint;
+	
+	if(newPID==-1) then
+		if(semW!=-1) then
+			newPID=semW;
+		else
+			newPID=tickP;
+		endif;
+	endif;
+	breakpoint;
+	if(newPID==-1) then
+		[SYSTEM_STATUS_TABLE+5]=0;
+		return;
+	endif;
+	print(newPID);
+	
+	alias processEntry R8;
+	processEntry=PROCESS_TABLE+16*newPID;
+	[processEntry]=0;
+	
+	alias pageTableEntry R4;
+	pageTableEntry=PAGE_TABLE_BASE+20*newPID;
+	
+	counter=2;
+	alias newBlock R5;
+	alias diskMapEntry R9;
+	diskMapEntry=DISK_MAP_TABLE+10*newPID;
+	while(counter<10) do
+		if([pageTableEntry+2*counter]!=-1) then
+			if(((counter<=3)&&(counter>=2)&&([MEMORY_FREE_LIST+[pageTableEntry+2*counter]]==1))||((counter>=8)&&(counter<=9))) then
+				
+			
+				multipush(R3,R4,R7,R8,R9);
+				R1=6;
+				call MEMORY_MANAGER;
+				multipop(R3,R4,R7,R8,R9);
+				newBlock=R0;
+				[diskMapEntry+counter]=newBlock;
+				
+				multipush(R3,R4,R5,R7,R8,R9);
+				R1=1;
+				R2=[SYSTEM_STATUS_TABLE+1];
+				R3=[pageTableEntry+2*counter];
+				R4=newBlock;
+				call DEVICE_MANAGER;
+				multipop(R3,R4,R5,R7,R8,R9);
+				
+				multipush(R3,R4,R5,R7,R8,R9);
+				R1=2;
+				R2=[pageTableEntry+2*counter];
+				call MEMORY_MANAGER;
+				multipop(R3,R4,R5,R7,R8,R9);
+				
+				[pageTableEntry+2*counter]=-1;
+				[pageTableEntry+2*counter+1]="0000";
+					
+					
+							
+			endif;
+			
+			if((counter>=4)&&(counter<=7)) then
+				multipush(R7,R3,R4,R8,R9);
+				R1=2;
+				R2=[pageTableEntry+2*counter];
+				call MEMORY_MANAGER;
+				multipop(R7,R3,R4,R8,R9);
+				[pageTableEntry+2*counter]=-1;
+				[pageTableEntry+2*counter+1]="0000";
+			endif;
+		
+					
+		endif;
+	
+	
+		counter=counter+1;
+	endwhile;
+	
+	[processEntry+6]=1;
+	
+	[SYSTEM_STATUS_TABLE+4]=[SYSTEM_STATUS_TABLE+4]+1;
+	[SYSTEM_STATUS_TABLE+5]=0;
+	breakpoint;
+	return;
+	
+	
+endif;
+
+if(functionNum==2) then
+	alias newPID R3;
+	newPID=-1;
+	alias counter R4;
+	counter=0;
+	alias maxTick R5;
+	maxTick=-1;
+	alias processTableEntry R6;
+	
+	while(counter<16) do
+		processTableEntry=PROCESS_TABLE+16*counter;
+		if(([processTableEntry+4]==READY)&&([processTableEntry+6]==1)&&([processTableEntry]>maxTick)) then
+			newPID=counter;
+			maxTick=([processTableEntry]);
+			
+		endif;
+		counter=counter+1;
+	endwhile;
+	
+	breakpoint;
+	if(newPID==-1) then
+		[SYSTEM_STATUS_TABLE+5]=0;
+		return;
+	endif;
+	
+	processTableEntry=PROCESS_TABLE+16*newPID;
+	[processTableEntry]=0;
+	alias pageTableEntry R7;
+	pageTableEntry=PAGE_TABLE_BASE+20*newPID;
+	alias pageNo R8;
+	counter=2;
+	alias diskMapEntry R9;
+	diskMapEntry=DISK_MAP_TABLE+10*newPID;
+	while(counter<10) do
+		if((counter<4)||(counter>=8)) then
+		
+			if([diskMapEntry+counter]!=-1) then
+				multipush(R3,R4,R5,R6,R7,R9);
+				R1=1;
+				call MEMORY_MANAGER;
+				pageNo=R0;
+				multipop(R3,R4,R5,R6,R7,R9);
+				multipush(R3,R4,R5,R6,R7,R8,R9);
+				R1=2;
+				R2=[SYSTEM_STATUS_TABLE+1];
+				R3=pageNo;
+				R4=[diskMapEntry+counter];
+				call DEVICE_MANAGER;
+				multipop(R3,R4,R5,R6,R7,R8,R9);
+				multipush(R3,R4,R5,R6,R7,R8,R9);
+				R1=4;
+				R2=[diskMapEntry+counter];
+				R3=[SYSTEM_STATUS_TABLE+1];
+				call MEMORY_MANAGER;
+				multipop(R3,R4,R5,R6,R7,R8,R9);
+				[pageTableEntry+2*counter]=pageNo;
+				[pageTableEntry+2*counter+1]="0110";
+				[diskMapEntry+counter]=-1;
+			
+			
+			endif;
+		
+		endif;
+		
+		
+		counter=counter+1;
+	
+	
+	endwhile;
+	[processTableEntry+6]=0;
+	[SYSTEM_STATUS_TABLE+4]=[SYSTEM_STATUS_TABLE+4]-1;
+	[SYSTEM_STATUS_TABLE+5]=0;
+	breakpoint;
+	return;
+	
+	
+	
+endif;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

@@ -157,7 +157,7 @@ if(functionNum==5) then
 	endwhile;
 	
 	counter=2;
-	while(counter<16) do
+	while(counter<15) do
 		if((counter!=PID)&&([PROCESS_TABLE+16*counter+4]!=TERMINATED)) then
 			multipush(R1,R2,R3);
 			R1=3;

@@ -89,7 +89,7 @@ if(functionNum==5) then
 	alias counter R4;
 	counter=0;
 	while(counter<16) do
-		if(([PROCESS_TABLE+16*counter+4]==WAIT_FILE)&&(([PROCESS_TABLE+16*counter+4]==inodeIndex))) then
+		if(([PROCESS_TABLE+16*counter+4]==WAIT_FILE)&&(([PROCESS_TABLE+16*counter+5]==inodeIndex))) then
 			[PROCESS_TABLE+16*counter+4]=READY;
 		endif;
 		counter=counter+1;

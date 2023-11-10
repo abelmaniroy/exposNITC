@@ -1,0 +1,252 @@
+breakpoint;
+alias counter R0;
+alias processTableEntry R8;
+loadi(65,7);
+loadi(66,8);
+loadi(22,35);
+loadi(23,36);
+loadi(2,15);
+loadi(3,16);
+loadi(63,13);
+loadi(64,14);
+loadi(4,17);
+loadi(5,18);
+loadi(16,29);
+loadi(17,30);
+
+
+loadi(83,69);
+loadi(84,70);
+
+
+PTBR=PAGE_TABLE_BASE+20;
+PTLR=10;
+[PTBR+0]=63;
+[PTBR+1]="0100";
+[PTBR+2]=64;
+[PTBR+3]="0100";
+
+[PTBR+4]=-1;
+[PTBR+5]="0000";
+[PTBR+6]=-1;
+[PTBR+7]="0000";
+
+[PTBR+8]=65;
+[PTBR+9]="0100";
+[PTBR+10]=-1;
+[PTBR+11]="0000";
+[PTBR+12] = -1;
+[PTBR+13] = "0000";
+[PTBR+14] = -1;
+[PTBR+15] = "0000";
+
+[PTBR+16]=66;
+[PTBR+17]="0110";
+[PTBR+18]=-1;
+[PTBR+19]="0000";
+
+processTableEntry=PROCESS_TABLE+16;
+[processTableEntry+1]=1;
+[processTableEntry+4]=CREATED;
+[processTableEntry+11]=77;
+[processTableEntry+13]=8*512;
+[processTableEntry+12]=0;
+[processTableEntry+14]=PTBR;
+[processTableEntry+15]=10;
+
+[66*512]=[65*512+1];
+
+
+
+loadi(50,63);
+loadi(51,64);
+loadi(40,53);
+loadi(41,54);
+loadi(48,61);
+loadi(49,62);
+
+
+counter=0;
+while(counter<=240) do
+	if(counter>=48) then
+		[PROCESS_TABLE+counter+4]=TERMINATED;
+	endif;
+	[PROCESS_TABLE+counter]=0;
+	counter=counter+16;
+endwhile;
+
+[TERMINAL_STATUS_TABLE]=0;
+
+
+loadi(8,21);
+loadi(9,22);
+loadi(14,27);
+loadi(15,28);
+
+
+loadi(20,33);
+loadi(21,34);
+loadi(42,55);
+loadi(43,56);
+loadi(44,57);
+loadi(45,58);
+loadi(59,3);
+loadi(60,4);
+
+
+counter=0;
+while(counter<128) do
+	if(counter<81) then
+		[MEMORY_FREE_LIST+counter]=1;
+	else
+		[MEMORY_FREE_LIST+counter]=0;
+	endif;
+	counter=counter+1;
+endwhile;
+[SYSTEM_STATUS_TABLE+2]=45;
+[SYSTEM_STATUS_TABLE+3]=0;
+
+loadi(6,19);
+loadi(7,20);
+[DISK_STATUS_TABLE]=0;
+
+counter=1;
+while(counter<=8) do
+	[([processTableEntry+11]+1)*512-2*counter]=-1;
+	counter=counter+1;
+endwhile;
+
+
+
+
+loadi(61,2);
+
+loadi(18,31);
+loadi(19,32);
+
+loadi(24,37);
+loadi(25,38);
+loadi(32,45);
+loadi(33,46);
+
+counter=0;
+while(counter<32) do
+	[SEMAPHORE_TABLE+4*counter]=-1;
+	[SEMAPHORE_TABLE+4*counter+1]=0;
+	counter=counter+1;
+endwhile;
+
+loadi(28,41);
+loadi(29,42);
+loadi(30,43);
+loadi(31,44);
+
+loadi(10,23);
+loadi(11,24);
+
+loadi(62,5);
+
+
+counter=0;
+while(counter<60) do
+
+	[FILE_STATUS_TABLE+4*counter]=-1;
+	[FILE_STATUS_TABLE+4*counter+1]=-1;
+	counter=counter+1;
+endwhile;
+
+
+counter=0;
+while(counter<4) do
+	[BUFFER_TABLE+4*counter]=-1;
+	[BUFFER_TABLE+4*counter+1]=0;
+	[BUFFER_TABLE+4*counter+2]=-1;
+	counter=counter+1;
+endwhile;
+
+[processTableEntry+3]=1;
+
+loadi(12,25);
+loadi(13,26);
+loadi(46,59);
+loadi(47,60);
+
+counter=0;
+while(counter<32) do
+	[OPEN_FILE_TABLE+4*counter]=-1;
+	[OPEN_FILE_TABLE+4*counter+1]=0;
+	[OPEN_FILE_TABLE+4*counter+2]=-1;
+	[OPEN_FILE_TABLE+4*counter+3]=-1;
+	counter=counter+1;
+endwhile;
+
+loadi(26,39);
+loadi(27,40);
+loadi(34,47);
+loadi(35,48);
+loadi(36,49);
+loadi(37,50);
+
+loadi(67,9);
+loadi(68,10);
+
+
+processTableEntry=PROCESS_TABLE+32;
+
+
+PTBR=PAGE_TABLE_BASE+40;
+[PTBR+0]=63;
+[PTBR+1]="0100";
+[PTBR+2]=64;
+[PTBR+3]="0100";
+
+[PTBR+4]=-1;
+[PTBR+5]="0000";
+[PTBR+6]=-1;
+[PTBR+7]="0000";
+
+[PTBR+8]=67;
+[PTBR+9]="0100";
+[PTBR+10]=68;
+[PTBR+11]="0100";
+[PTBR+12] = -1;
+[PTBR+13] = "0000";
+[PTBR+14] = -1;
+[PTBR+15] = "0000";
+
+[PTBR+16]=78;
+[PTBR+17]="0110";
+[PTBR+18]=79;
+[PTBR+19]="0110";
+
+[processTableEntry+1]=2;
+[processTableEntry+2]=1;
+[processTableEntry+4]=TERMINATED;
+[processTableEntry+11]=80;
+[processTableEntry+13]=8*512;
+[processTableEntry+12]=0;
+[processTableEntry+14]=PTBR;
+[processTableEntry+15]=10;
+
+[78*512]=[67*512+1];
+
+counter=0;
+while(counter<10) do
+	[DISK_MAP_TABLE+20+counter]=-1;
+	counter=counter+1;
+endwhile;
+[DISK_MAP_TABLE+20+4]=67;
+[DISK_MAP_TABLE+20+5]=68;
+
+
+loadi(52,65);
+loadi(53,66);
+
+[SYSTEM_STATUS_TABLE+4]=0;
+[SYSTEM_STATUS_TABLE+5]=0;
+
+
+
+return;
+
+
